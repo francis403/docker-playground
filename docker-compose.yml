@@ -1,0 +1,25 @@
+version: '3'
+services: 
+  web: 
+    build:
+      # Context indicates where we want the files for our project to come from
+      context: .
+      # Use this file as a dockerfile
+      dockerfile: Dockerfile.dev
+
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules/
+      - .:/app
+  #Service with the sole purpose to run our tests
+  tests:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes: 
+      # - represents an array in docker-compose
+      - /app/node_modules
+      - .:/app
+    # override starting command used when the container starts
+    command: ["npm", "run", "test"]

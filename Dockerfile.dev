@@ -1,0 +1,29 @@
+# The file is called Dockerfile.dev to make clear that the file is supposed to be used in development
+# By default, docker build . is only going to look for a file called Dockerfile so we must make a little twick
+# docker build -f Dockerfile.dev .
+FROM node:16-alpine
+
+WORKDIR '/app'
+
+COPY package.json .
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "start"]
+
+# docker run -p 3000:3000 <id-of-container>
+
+# We can use **docker volumes** to set up a placeholder inside the container
+#   - instead of copying everything, we put a reference in the container that points back to the local machine
+# Run: docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app <image_id>
+#   - -v /app/node_modules -> put a bookmark on the node_modules folder
+#       - for this example, the current directory might not have a node_modules folder when you run docker run.
+#       - So what happens is the /app/node_modules folder on the container will get overriden
+#       - By running *-v /app/node_modules* we are asking the volume not to map it in the container 
+#   - -v $(pwd):/app -> take the $(pwd) folder and map it into the '/app' folder inside the container
+
+# docker attach <container_id>
+# attaching to the stdin/stdout/stderr of the container
+
+#docker exec -it <container_id> sh
